@@ -1,0 +1,36 @@
+.board-container {
+    margin: auto;
+}
+
+.cell {
+    font-size: 1.5em;
+    width: 2em;
+    height: 2em;
+    background-color: rgb(103, 102, 102);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 1);
+    border-radius: 10%;
+    cursor: pointer;
+}
+
+.revealed {
+    background-color: rgb(160, 157, 157);
+}
+
+.reset-area {
+    text-align: center;
+}
+
+.reset-title {
+    background-color: yellow;
+}
+
+.reset-button {
+    background-color: pink;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
