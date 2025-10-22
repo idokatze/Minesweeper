@@ -5,9 +5,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Minesweeper</title>
         <link rel="stylesheet" href="css/main.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+            rel="stylesheet"
+        />
     </head>
     <body>
         <h1>Minesweeper 2025</h1>
+
+        <div class="diff-area">
+            <div class="diff-title">----- Difficulty -----</div>
+            <div class="diff-options">
+                <div class="diff easy" onclick="onInit(4, 2)">EASY</div>
+                <div class="diff intermediate" onclick="onInit(8, 14)">INTERMEDIATE</div>
+                <div class="diff expert" onclick="onInit(12, 32)">EXPERT</div>
+            </div>
+        </div>
+
+        <div class="timer">TIMER</div>
 
         <div class="board-area">
             <div class="board-header"></div>
@@ -16,17 +31,20 @@
             </table>
         </div>
 
-        <table>
-            <tbody>
-                <tr>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- <td class="cell cell-${i}-${j}">
+            <div
+                class="cover"
+                onclick="onCellClicked(this, ${i}, ${j})"
+                oncontextmenu="onFlag(event, this, ${i}, ${j})"
+            ></div>
+            <div class="content"></div>
+        </td> -->
 
         <div class="reset-area hidden">
             <div class="reset-title">You Lost!!</div>
-            <div class="reset-button" onclick="resetGame()">Play Again!</div>
+            <div class="reset-button" onclick="resetGame()">
+                →→→ Play Again ←←←
+            </div>
         </div>
 
         <script src="js/utils.js"></script>
