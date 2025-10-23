@@ -16,14 +16,32 @@
 
             <div class="diff-area">
                 <div class="diff-title">----- Difficulty -----</div>
+
                 <div class="diff-options">
-                    <div class="diff easy" onclick="onInit(4, 2)">EASY</div>
-                    <div class="diff intermediate" onclick="onInit(8, 14)">
+                    <div class="diff easy" onclick="changeLevel('easy')">
+                        EASY
+                    </div>
+
+                    <div
+                        class="diff intermediate" onclick="changeLevel('intermediate')">
                         INTERMEDIATE
                     </div>
-                    <div class="diff expert" onclick="onInit(12, 32)">
+
+                    <div class="diff expert" onclick="changeLevel('expert')">
                         EXPERT
                     </div>
+                    
+                </div>
+            </div>
+
+            <div class="best-area">
+                <div class="best-title">Best Times</div>
+                <div class="best-options">
+                    <div class="best easy">EASY:<br /><span></span></div>
+                    <div class="best intermediate">
+                        INTERMEDIATE:<br /><span></span>
+                    </div>
+                    <div class="best expert">EXPERT:<br /><span></span></div>
                 </div>
             </div>
 
@@ -41,10 +59,11 @@
             </div>
 
             <div class="hints-area">
-                <div class="hints">HINTS: 
-                    <span class="hint  hint-1" onclick="onHint(this, 0)"></span>
-                    <span class="hint  hint-2" onclick="onHint(this, 1)"></span>
-                    <span class="hint  hint-3" onclick="onHint(this, 2)"></span>
+                <div class="hints">
+                    HINTS:
+                    <span class="hint hint-1" onclick="onHint(this, 0)"></span>
+                    <span class="hint hint-2" onclick="onHint(this, 1)"></span>
+                    <span class="hint hint-3" onclick="onHint(this, 2)"></span>
                 </div>
             </div>
 
@@ -71,7 +90,9 @@
             </footer>
 
             <script src="js/utils.js"></script>
-            <script src="js/main.js"></script>
+            <script src="js/initResetRender.js"></script>
+            <script src="js/game.js"></script>
+            <script src="js/calc.js"></script>
         </div>
     </body>
 </html>
