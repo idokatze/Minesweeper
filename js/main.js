@@ -2,10 +2,16 @@
 
 var gBoard
 var gameIsON
+var gTimerId
+var gStartTime
+var gStopTime
+var gHintTimer
 
 const FLAG = '🚩'
 const MINE = '💣'
 const BLAST = '💥'
+const ALIVE = '🤡'
+const DEAD = '☠️'
 const EMPTY = ''
 
 const gGame = {
@@ -13,7 +19,11 @@ const gGame = {
     revealedCount: 0,
     totalMines: 2,
     markedCount: 0,
+    livesCount: 3,
     timeElapsed: null,
+    hints: [],
+    hintClicked: false,
+    hintInUse: false,
 }
 
 const gLevel = {
@@ -24,17 +34,15 @@ const gLevel = {
 
 onInit()
 
-// Called when page loads
 function onInit(length = 4, mines = 2) {
     gBoard = buildBoard(length)
     gGame.isOn = true
     gGame.totalMines = mines
     renderBoard(gBoard)
+    renderLives()
+    renderHints()
 }
 
-// Builds the board
-// Set some mines Call setMinesNegsCount()
-// Return the created board
 function buildBoard(size) {
     // later change size???  to accept user input
     const board = []
@@ -56,14 +64,13 @@ function buildBoard(size) {
     return board
 }
 
-// Render the board as a <table> to the page
 function renderBoard(board) {
     var strHTML = ''
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>'
 
         for (var j = 0; j < board[0].length; j++) {
-            strHTML += `<td class="cell cell-${i}-${j}"><div class="cover" onclick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onFlag(event, this, ${i}, ${j})"></div><div class="content"></div></td>`
+            strHTML += `<td class="cell cell-${i}-${j}"><div class="cell-${i}-${j} cover" onclick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onFlag(event, this, ${i}, ${j})"></div><div class="content"></div></td>`
         }
 
         strHTML += `</tr>`
@@ -72,9 +79,6 @@ function renderBoard(board) {
         elContainer.innerHTML = strHTML
     }
 }
-
-// Count mines around each cell and
-// set the cell's minesAroundCount
 
 function setMinesAndCountNeighbors(firstI, first) {
     var numOfMines = gGame.totalMines
@@ -111,8 +115,6 @@ function setMinesAndCountNeighbors(firstI, first) {
     }
 }
 
-// Called when a cell is clicked
-
 function getNeighborMines(rowIdx, colIdx) {
     var neighborMines = 0
 
@@ -135,17 +137,20 @@ function getNeighborMines(rowIdx, colIdx) {
 }
 
 function onCellClicked(elCell, i, j) {
-    // console.log(elCell)
+    console.log(elCell)
     const currCell = gBoard[i][j]
     if (currCell.isRevealed || currCell.isMarked) return
 
-    if (gGame.revealedCount === 0) {
-        setMinesAndCountNeighbors(i, j)
-
-        // first click, set mines
+    if (gGame.hintClicked) {
+        revealOnHint(elCell, i, j)
+        return
     }
 
-    // console.log(currCell)
+    if (gGame.revealedCount === 0) {
+        gGame.isOn = true
+        startStopTimer()
+        setMinesAndCountNeighbors(i, j)
+    }
 
     currCell.isRevealed = true
     gGame.revealedCount++
@@ -162,8 +167,15 @@ function onCellClicked(elCell, i, j) {
             return
         }
     } else {
-        gameLost()
+        gGame.livesCount--
+        renderLives()
         elCell.innerText = `${BLAST}`
+        console.log(gGame.livesCount)
+        if (gGame.livesCount === 0) {
+            gGame.isOn = false
+            startStopTimer()
+            gameLost()
+        }
     }
 }
 
@@ -200,13 +212,48 @@ function gameLost() {
 }
 
 function resetGame() {
+    gGame.livesCount = 3
     onInit()
-    var gameOver = document.querySelector('.reset-area')
-    gameOver.classList.add('hidden')
+    var elGameOver = document.querySelector('.reset-area')
+    elGameOver.classList.add('hidden')
+    var elVictory = document.querySelector('.victory-area')
+    elVictory.classList.add('hidden')
+    var elTimer = document.querySelector('.timer')
+    elTimer.innerText = 'YOUR TIME:'
     gGame.isOn = false
     gGame.revealedCount = 0
     gGame.markedCount = 0
     gGame.timeElapsed = null
+}
+
+function onHint(elHint, hintIdx) {
+    if (gGame.revealedCount === 0) return
+    if (gGame.hints[hintIdx] === true) return
+    if (gGame.hintInUse) return
+
+    gGame.hints[hintIdx] = true
+    elHint.classList.remove('unused')
+
+    gGame.hintClicked = true
+}
+
+function revealOnHint(elCell, i, j) {
+    clearTimeout(gHintTimer)
+
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (
+                i < 0 ||
+                i >= gBoard.length ||
+                j < 0 ||
+                j >= gBoard[0].length ||
+                (i === rowIdx && j === colIdx)
+            )
+                continue
+
+            if (gBoard[i][j].isMine) neighborMines++
+        }
+    }
 }
 
 function renderMinesOnLoss(elCell, cell) {
@@ -221,19 +268,20 @@ function renderMinesOnLoss(elCell, cell) {
     elCell.classList.add('revealed')
 }
 
-// The game ends when all mines are marked,
-// and all the other cells are revealed
 function checkGameOver() {
     // const totalCells = gLevel.beginner.length ** 2
     const totalCells = gLevel.beginner.length ** 2
 
     if (gGame.revealedCount + gGame.markedCount === totalCells) {
+        gGame.isOn = false
+        startStopTimer()
         console.log('victory')
+
+        var victory = document.querySelector('.victory-area')
+        victory.classList.remove('hidden')
     }
 }
 
-//  i, j) When the user clicks a cell with no mines around,
-// reveal not only that cell, but also its neighbors.
 function expandReveal(rowIdx, colIdx) {
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
@@ -261,6 +309,48 @@ function expandReveal(rowIdx, colIdx) {
             }
         }
     }
+}
+
+function startStopTimer() {
+    if (gGame.isOn) {
+        clearInterval(gTimerId)
+        gStartTime = Date.now()
+
+        gTimerId = setInterval(() => {
+            gGame.timeElapsed = Date.now() - gStartTime
+            const elTimer = document.querySelector('.timer')
+            elTimer.innerText = getTimeStr(gGame.timeElapsed)
+        }, 100)
+    } else {
+        clearInterval(gTimerId)
+        gTimerId = null
+    }
+}
+
+function renderHints() {
+    var elHints = document.querySelectorAll('.hint')
+    for (var i = 0; i < 3; i++) {
+        gGame.hints[i] = false
+        elHints[i].classList.add('unused')
+    }
+}
+
+function renderLives() {
+    var elLives = document.querySelector('.lives-left')
+    var aliveCount = gGame.livesCount
+    console.log(aliveCount)
+    var deadCount = 3 - aliveCount
+
+    var strLives = `LIVES LEFT: `
+
+    for (var i = 0; i < deadCount; i++) {
+        strLives += `${DEAD}  `
+    }
+    for (var i = 0; i < aliveCount; i++) {
+        strLives += `${ALIVE}  `
+    }
+
+    elLives.innerText = strLives
 }
 
 function getCellByClass(i, j) {

@@ -11,43 +11,67 @@
         />
     </head>
     <body>
-        <h1>Minesweeper 2025</h1>
+        <div class="page-container">
+            <h1>Minesweeper 2025</h1>
 
-        <div class="diff-area">
-            <div class="diff-title">----- Difficulty -----</div>
-            <div class="diff-options">
-                <div class="diff easy" onclick="onInit(4, 2)">EASY</div>
-                <div class="diff intermediate" onclick="onInit(8, 14)">INTERMEDIATE</div>
-                <div class="diff expert" onclick="onInit(12, 32)">EXPERT</div>
+            <div class="diff-area">
+                <div class="diff-title">----- Difficulty -----</div>
+                <div class="diff-options">
+                    <div class="diff easy" onclick="onInit(4, 2)">EASY</div>
+                    <div class="diff intermediate" onclick="onInit(8, 14)">
+                        INTERMEDIATE
+                    </div>
+                    <div class="diff expert" onclick="onInit(12, 32)">
+                        EXPERT
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="timer">TIMER</div>
+            <div class="game-area">
+                <div class="timer-area">
+                    <div class="timer">YOUR TIME:</div>
+                </div>
 
-        <div class="board-area">
-            <div class="board-header"></div>
-            <table class="board-container">
-                <tbody class="board"></tbody>
-            </table>
-        </div>
-
-        <!-- <td class="cell cell-${i}-${j}">
-            <div
-                class="cover"
-                onclick="onCellClicked(this, ${i}, ${j})"
-                oncontextmenu="onFlag(event, this, ${i}, ${j})"
-            ></div>
-            <div class="content"></div>
-        </td> -->
-
-        <div class="reset-area hidden">
-            <div class="reset-title">You Lost!!</div>
-            <div class="reset-button" onclick="resetGame()">
-                →→→ Play Again ←←←
+                <div class="board-area">
+                    <div class="board-header"></div>
+                    <table class="board-container">
+                        <tbody class="board"></tbody>
+                    </table>
+                </div>
             </div>
-        </div>
 
-        <script src="js/utils.js"></script>
-        <script src="js/main.js"></script>
+            <div class="hints-area">
+                <div class="hints">HINTS: 
+                    <span class="hint  hint-1" onclick="onHint(this, 0)"></span>
+                    <span class="hint  hint-2" onclick="onHint(this, 1)"></span>
+                    <span class="hint  hint-3" onclick="onHint(this, 2)"></span>
+                </div>
+            </div>
+
+            <div class="lives-area">
+                <div class="lives-left"></div>
+            </div>
+
+            <div class="reset-area hidden">
+                <div class="reset-title">You Lost!!</div>
+                <div class="reset-button" onclick="resetGame()">
+                    →→→ Play Again ←←←
+                </div>
+            </div>
+
+            <div class="victory-area hidden">
+                <div class="victory-title">You Won!!</div>
+                <div class="victory-button" onclick="resetGame()">
+                    →→→ Play Again ←←←
+                </div>
+            </div>
+
+            <footer>
+                <p>© Ido Katzenellenbogen 2025</p>
+            </footer>
+
+            <script src="js/utils.js"></script>
+            <script src="js/main.js"></script>
+        </div>
     </body>
 </html>

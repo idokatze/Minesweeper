@@ -33,3 +33,18 @@ function getRandomColor() {
         if (color !== excludedColor) return color
     }
 }
+
+function getTimeStr(elapsedTime) {
+    var minutes = String(Math.floor(elapsedTime / 60000)).padStart(2, '0')
+    var seconds = String(Math.floor((elapsedTime % 60000) / 1000)).padStart(
+        2,
+        '0'
+    )
+    var hundredths = String(Math.floor((elapsedTime % 1000) / 10)).padStart(
+        2,
+        '0'
+    )
+    var strTimer = ''
+    strTimer += `YOUR TIME: ${minutes}:${seconds}.${hundredths}`
+    return strTimer
+}
