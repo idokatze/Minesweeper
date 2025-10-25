@@ -100,7 +100,8 @@ function onCellClicked(elCell, i, j) {
             elCell.innerText = `${currCell.minesAround}`
             return
         }
-    } else { // landed on mine
+    } else {
+        // landed on mine
         gGame.livesCount--
         renderLives()
         elCell.innerText = `${BLAST}`
@@ -207,40 +208,41 @@ function checkGameOver() {
     if (gGame.revealedCount + gGame.markedCount === totalCells) {
         gGame.isOn = false
         startStopTimer()
-        console.log('victory')
 
         const victory = document.querySelector('.victory-area')
         victory.classList.remove('hidden')
 
-        // check if best time
         if (totalCells === 16) {
-            const prevBest = +localStorage.getItem('bestEasy')
-            console.log(prevBest)
-            console.log(gWiningTime)
-            if (+gWiningTime < prevBest) {
+            var prevBest = +localStorage.getItem('bestEasy')
+            var elEasy = document.querySelector('.easy span')
+
+            if (isNaN(prevBest) || gWiningTime < prevBest) {
                 localStorage.setItem('bestEasy', gWiningTime)
-                const elBest = document.querySelector('.easy span')
-                elBest.innerText = getTimeStr(gWiningTime)
+                elEasy.innerText = getTimeStr(gWiningTime)
+            } else {
+                elEasy.innerText = getTimeStr(prevBest)
             }
         } else if (totalCells === 64) {
-            const prevBest = +localStorage.getItem('bestIntermediate')
-            console.log(prevBest)
-            console.log(gWiningTime)
-            if (+gWiningTime < prevBest) {
+            var prevBest = +localStorage.getItem('bestIntermediate')
+            var elIntermediate = document.querySelector('.intermediate span')
+
+            if (isNaN(prevBest) || gWiningTime < prevBest) {
                 localStorage.setItem('bestIntermediate', gWiningTime)
-                const elBest = document.querySelector('.intermediate span')
-                elBest.innerText = getTimeStr(gWiningTime)
+                elIntermediate.innerText = getTimeStr(gWiningTime)
+            } else {
+                elIntermediate.innerText = getTimeStr(prevBest)
             }
         } else if (totalCells === 144) {
-            const prevBest = +localStorage.getItem('bestExpert')
-            console.log(prevBest)
-            console.log(gWiningTime)
-            if (+gWiningTime < prevBest) {
+            var prevBest = +localStorage.getItem('bestExpert')
+            var elExpert = document.querySelector('.expert span')
+
+            if (isNaN(prevBest) || gWiningTime < prevBest) {
                 localStorage.setItem('bestExpert', gWiningTime)
-                const elBest = document.querySelector('.expert span')
-                elBest.innerText = getTimeStr(gWiningTime)
+                elExpert.innerText = getTimeStr(gWiningTime)
+            } else {
+                elExpert.innerText = getTimeStr(prevBest)
             }
-        } else return
+        }
     }
 }
 

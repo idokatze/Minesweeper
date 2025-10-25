@@ -7,6 +7,7 @@ var gStartTime
 var gStopTime
 var gWiningTime
 var gHintTimer
+var gIsDarkMode
 
 const FLAG = '🚩'
 const MINE = '💣'
@@ -47,6 +48,7 @@ function onInit(length = 4, mines = 2) {
     renderLives()
     renderHints()
     initLocalStorage()
+    gIsDarkMode = false
 }
 
 function setGameVariables(mines) {
@@ -67,30 +69,45 @@ function setGameVariables(mines) {
 
 function initLocalStorage() {
     const elBestEasy = document.querySelector('.easy span')
-    const elBestIntermediate = document.querySelector('.easy span')
-    const elBestExpert = document.querySelector('.easy span')
+    const elBestIntermediate = document.querySelector('.intermediate span')
+    const elBestExpert = document.querySelector('.expert span')
 
-    if (localStorage.getItem('bestEasy') === null) {
-        localStorage.setItem('bestEasy', Infinity)
+    var val
+
+    if (!localStorage.getItem('bestEasy')) {
+        localStorage.setItem('bestEasy', 0)
         elBestEasy.innerText = ''
     } else {
-        elBestEasy.innerText = getTimeStr(localStorage.getItem('bestEasy'))
+        val = +localStorage.getItem('bestEasy')
+        if (val && isFinite(val)) {
+            elBestEasy.innerText = getTimeStr(val)
+        } else {
+            elBestEasy.innerText = ''
+        }
     }
 
-    if (localStorage.getItem('bestIntermediate') === null) {
-        localStorage.setItem('bestEasy', Infinity)
+    if (!localStorage.getItem('bestIntermediate')) {
+        localStorage.setItem('bestIntermediate', 0)
         elBestIntermediate.innerText = ''
     } else {
-        elBestIntermediate.innerText = getTimeStr(
-            localStorage.getItem('bestEasy')
-        )
+        val = +localStorage.getItem('bestIntermediate')
+        if (val && isFinite(val)) {
+            elBestIntermediate.innerText = getTimeStr(val)
+        } else {
+            elBestIntermediate.innerText = ''
+        }
     }
 
-    if (localStorage.getItem('bestExpert') === null) {
-        localStorage.setItem('bestExpert', Infinity)
+    if (!localStorage.getItem('bestExpert')) {
+        localStorage.setItem('bestExpert', 0)
         elBestExpert.innerText = ''
     } else {
-        elBestExpert.innerText = getTimeStr(localStorage.getItem('bestEasy'))
+        val = +localStorage.getItem('bestExpert')
+        if (val && isFinite(val)) {
+            elBestExpert.innerText = getTimeStr(val)
+        } else {
+            elBestExpert.innerText = ''
+        }
     }
 }
 
@@ -212,4 +229,21 @@ function renderLives() {
     }
 
     elLives.innerText = strLives
+}
+
+function toggleDarkLight() {
+    const elBody = document.querySelector('body')
+    const elDarkButton = document.querySelector('.light-dark')
+
+    if (!gIsDarkMode) {
+        elBody.classList.add('dark-mode')
+        elDarkButton.classList.add('dark-mode')
+        elDarkButton.innerText = 'Light Mode' // user can click to switch *back*
+    } else {
+        elBody.classList.remove('dark-mode')
+        elDarkButton.classList.remove('dark-mode')
+        elDarkButton.innerText = 'Dark Mode' // user can click to switch *to*
+    }
+
+    gIsDarkMode = !gIsDarkMode
 }
